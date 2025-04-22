@@ -1,0 +1,62 @@
+{
+  "name": "@varshneyhars/ai-bg-remover",
+  "version": "1.0.0",
+  "description": "🚀 A high-performance AI-powered background removal library for Node.js, utilizing the powerful rembg Python library",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node test/test.js",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Varshneyhars/ai-bg-remover.git"
+  },
+  "keywords": [
+    "background-removal",
+    "ai",
+    "image-processing",
+    "rembg",
+    "u2net",
+    "svg",
+    "vector-graphics",
+    "image-enhancement",
+    "nodejs",
+    "python"
+  ],
+  "author": "Harsh Varshney",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Varshneyhars/ai-bg-remover/issues"
+  },
+  "homepage": "https://github.com/Varshneyhars/ai-bg-remover#readme",
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@varshneyhars/ai-bg-remover": "file:",
+    "child_process": "^1.0.2",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "python": {
+    "dependencies": [
+      "rembg",
+      "opencv-python",
+      "numpy",
+      "Pillow",
+      "scikit-image",
+      "scikit-learn"
+    ],
+    "version": ">=3.7.0"
+  }
+}
