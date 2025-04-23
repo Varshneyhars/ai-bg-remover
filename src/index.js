@@ -2,6 +2,24 @@ const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
+// Get the absolute path to the Python script
+function getPythonScriptPath() {
+    // Get the directory where this module is located
+    const moduleDir = path.dirname(require.main.filename);
+    // Look for the script in the node_modules directory
+    const scriptPath = path.join(moduleDir, 'node_modules', '@varshneyhars/ai-bg-remover', 'src', 'remove_bg.py');
+    
+    // If not found in node_modules, try the current directory (for development)
+    if (!fs.existsSync(scriptPath)) {
+        const devScriptPath = path.join(__dirname, 'remove_bg.py');
+        if (fs.existsSync(devScriptPath)) {
+            return devScriptPath;
+        }
+    }
+    
+    return scriptPath;
+}
+
 // Check if the file exists and is a valid image
 function validateImageFile(inputImage) {
     return new Promise((resolve, reject) => {
@@ -38,8 +56,14 @@ async function removeBackground(inputImage, outputImage, options = {}) {
         const pythonCmd = process.platform === "win32" ? "python" : "python3";
         const inputPath = path.resolve(validImagePath).replace(/\\/g, "/");
         const outputPath = path.resolve(outputImage).replace(/\\/g, "/");
+        
+        // Get the Python script path
+        const scriptPath = getPythonScriptPath();
+        if (!fs.existsSync(scriptPath)) {
+            throw new Error(`Python script not found at: ${scriptPath}`);
+        }
 
-        let command = `${pythonCmd} src/remove_bg.py "${inputPath}" "${outputPath}"`;
+        let command = `${pythonCmd} "${scriptPath}" "${inputPath}" "${outputPath}"`;
 
         // Add background replacement if specified
         if (options.background) {
