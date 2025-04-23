@@ -1,6 +1,6 @@
 {
   "name": "@harshit_01/ai-bg-remover",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "🚀 A high-performance AI-powered background removal library for Node.js, utilizing the powerful rembg Python library",
   "main": "src/index.js",
   "scripts": {
