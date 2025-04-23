@@ -79,12 +79,23 @@ const options = {
 };
 
 removeBackground(inputFile, outputFile, options)
-    .then(() => {
-        console.log(`✅ Background removed and saved to ${outputFile}`);
-        // If vector: true, an SVG file (e.g., output.svg) will also be created
+    .then(result => {
+        console.log('Success:', result);
+        // Sample Response:
+        // {
+        //     success: true,
+        //     outputPath: '/path/to/output.png',
+        //     message: 'Background removed successfully'
+        // }
     })
     .catch(err => {
         console.error(`❌ Error: ${err}`);
+        // Sample Error Response:
+        // ❌ Error: The input file does not exist: /path/to/input.jpg
+        // or
+        // ❌ Error: Unsupported file format. Please use JPG or PNG.
+        // or
+        // ❌ Error: File size exceeds the 5MB limit.
     });
 ```
 
@@ -106,6 +117,27 @@ removeBackground(inputFile, outputFile, options)
         * `'u2netp'` - Lightweight model (4.7MB)
         * `'u2net'` - Original model with highest quality (176MB)
         * `'isnet-general-use'` - Medium size with good performance (44MB)
+
+#### Response Format
+
+The function returns a Promise that resolves to an object with the following structure:
+
+```javascript
+{
+    success: true,           // Boolean indicating if the operation was successful
+    outputPath: string,      // Path to the processed image
+    message: string          // Success message
+}
+```
+
+#### Error Handling
+
+The function will reject the Promise with an error message in the following cases:
+
+* File does not exist: `❌ Error: The input file does not exist: <path>`
+* Unsupported format: `❌ Error: Unsupported file format. Please use JPG or PNG.`
+* File too large: `❌ Error: File size exceeds the 5MB limit.`
+* Processing error: `❌ Error: <error message from Python script>`
 
 ## Command-Line Usage (Python)
 

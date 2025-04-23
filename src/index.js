@@ -33,53 +33,54 @@ function validateImageFile(inputImage) {
 
 // Main function for background removal with options
 async function removeBackground(inputImage, outputImage, options = {}) {
-    return new Promise((resolve, reject) => {
-        validateImageFile(inputImage)
-            .then(validImagePath => {
-                const pythonCmd = process.platform === "win32" ? "python" : "python3";
-                const inputPath = path.resolve(validImagePath).replace(/\\/g, "/");
-                const outputPath = path.resolve(outputImage).replace(/\\/g, "/");
+    try {
+        const validImagePath = await validateImageFile(inputImage);
+        const pythonCmd = process.platform === "win32" ? "python" : "python3";
+        const inputPath = path.resolve(validImagePath).replace(/\\/g, "/");
+        const outputPath = path.resolve(outputImage).replace(/\\/g, "/");
 
-                let command = `${pythonCmd} src/remove_bg.py "${inputPath}" "${outputPath}"`;
+        let command = `${pythonCmd} src/remove_bg.py "${inputPath}" "${outputPath}"`;
 
-                // Add background replacement if specified
-                if (options.background) {
-                    command += ` --background "${options.background}"`;
+        // Add background replacement if specified
+        if (options.background) {
+            command += ` --background "${options.background}"`;
+        }
+
+        // Add AI enhancement if specified
+        if (options.enhance) {
+            command += ` --enhance`;
+        }
+
+        // Add vector conversion if specified
+        if (options.vector) {
+            command += ` --vector`;
+        }
+
+        // Add model selection if specified
+        if (options.model) {
+            command += ` --model "${options.model}"`;
+        }
+
+        console.log(`🚀 Running background removal with options: ${JSON.stringify(options)}`);
+
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    reject(`❌ Error: ${stderr || error.message}`);
+                    return;
                 }
-
-                // Add AI enhancement if specified
-                if (options.enhance) {
-                    command += ` --enhance`;
-                }
-
-                // Add vector conversion if specified
-                if (options.vector) {
-                    command += ` --vector`;
-                }
-
-                // Add model selection if specified
-                if (options.model) {
-                    command += ` --model "${options.model}"`;
-                }
-
-                console.log(`🚀 Running background removal with options: ${JSON.stringify(options)}`);
-
-                exec(command, (error, stdout, stderr) => {
-                    if (error) {
-                        reject(`❌ Error: ${stderr || error.message}`);
-                        return;
-                    }
-                    resolve(outputImage);
+                console.log(`✅ Background removed successfully: ${outputImage}`);
+                resolve({
+                    success: true,
+                    outputPath: outputImage,
+                    message: "Background removed successfully"
                 });
-            })
-            .catch(error => {
-                reject(error);
             });
-    }).then((outputImage) => {
-        console.log(`✅ Background removed successfully: ${outputImage}`);
-    }).catch((err) => {
-        console.error(`❌ Error: ${err}`);
-    });
+        });
+    } catch (error) {
+        console.error(`❌ Error: ${error}`);
+        throw error;
+    }
 }
 
 // Export functions
